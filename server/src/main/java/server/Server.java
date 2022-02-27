@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.System.in;
 
@@ -20,6 +22,7 @@ public class Server {
 
     private List<ClientHandler> clients;
     private AuthService authService;
+    private ExecutorService executorService;
 
 
     public Server() {
@@ -29,6 +32,7 @@ public class Server {
         if(!SQLHandler.connect()) {
             throw new RuntimeException("Не удалось подключиться к базам данных");
         }authService = new DataBaseAuthService();
+        executorService = Executors.newCachedThreadPool();
 
 
 
@@ -46,6 +50,7 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
+            executorService.shutdown();
             SQLHandler.disconnect();
             System.out.println("Server stop");
 
@@ -123,5 +128,9 @@ public class Server {
 
     public AuthService getAuthService() {
         return authService;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 }

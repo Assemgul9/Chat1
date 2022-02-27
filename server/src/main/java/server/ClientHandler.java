@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ExecutorService;
 
 public class ClientHandler {
     private Server server;
@@ -31,7 +32,7 @@ public class ClientHandler {
 
 
 
-            new Thread(() -> {
+            server.getExecutorService().execute(() -> {
 
                 try {
                     socket.setSoTimeout(5000);
@@ -156,7 +157,7 @@ public class ClientHandler {
 
                 }
 
-            }).start();
+            });
 
 
 
